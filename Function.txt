@@ -1,0 +1,702 @@
+#include <stdio.h>
+#include<stdbool.h>
+
+void Calculate(int, int, int, int, int,int);
+
+int main(int argc, char* args[])
+{
+	int year;
+	int month;																										/* 	月の変数を作成する  */
+	int day;																										/*  日の変数を作成する。*/
+	int hour;																										/*  時の変数を作成する。*/
+	int minute;																										/*  分の変数を作成する。*/
+	bool check1 = true;																								/*  Numの変数を作成する。*/
+	int num;
+
+	printf("日本(東京)の日時を入力して下さい。\n\n");
+	while (check1)
+	{
+		printf("年	:");
+		scanf_s("%d", &year);
+		printf("月	: ");
+		scanf_s("%d", &month);																						/* ユーザーに日本(東京)の月を入力するす */
+		printf("日	: ");
+		scanf_s("%d", &day);																						/* ユーザーに日本(東京)の日を入力するす */
+		printf("時	: ");
+		scanf_s("%d", &hour);																						/* ユーザーに日本(東京)の時を入力するす */
+		printf("分	: ");
+		scanf_s("%d", &minute);																						/* ユーザーに日本(東京)の分を入力するす */
+		
+		if ((month <= 0) || (month > 12))																			/* 月は1から12までじゃない場合は、print として“日時の入力に誤りがあります\n正しい日時が入力されるまで再入力してください”と表示します。 */
+		{
+			printf("日時の入力に誤りがあります\n正しい日時が入力されるまで再入力してください。\n\n ");
+		}
+		else if ((month == 9) || (month == 4) ||
+			(month == 6) || (month == 11))																			/*  4、6、9、11月の日は1から30までですか？どうか？　時は1から12までですか？どうか？　分は　0から　59までですか？どうか？を　テストする */
+		{
+			 if ((day <= 0) || (day > 30) || (hour < 0) ||
+				(hour > 23) || (minute < 0) || (minute > 59))
+			 {
+				printf("日時の入力に誤りがあります\n正しい日時が入力されるまで再入力してください。\n\n ");			/*  正しくない場合は　print として“日時の入力に誤りがあります\n正しい日時が入力されるまで再入力してください”と表示します。*/
+			 }
+			 else
+			 {
+				check1 = false;
+			 }
+		}
+		else if ((month == 1) || (month == 3) || (month == 5) ||
+			(month == 7) || (month == 8) || (month == 10) || (month == 12))											/*  1、3、5、7、8、10、12月の日は1から31までですか？どうか？　時は1から12までですか？どうか？　分は　0から　59までですか？どうか？を　テストする */
+		{
+			 if ((day <= 0) || (day > 31) || (hour < 0) ||
+				(hour > 23) || (minute < 0) || (minute > 59))
+			 {
+				printf("日時の入力に誤りがあります\n正しい日時が入力されるまで再入力してください。\n\n ");			/*  正しくない場合は　print として“日時の入力に誤りがあります\n正しい日時が入力されるまで再入力してください”と表示します。*/
+			 }
+			 else
+			 {
+				check1 = false;
+			 }
+		}
+		else if ((month == 2) && (day <= 0) || (day > 28) ||
+			(hour <= 0) || (hour > 24) || (minute < 0) || (minute >= 60))											/*  2月の日は1から 28 までですか？どうか？　時は1から12までですか？どうか？　分は　0から　59までですか？どうか？を　テストする */
+		{
+			printf("日時の入力に誤りがあります\n正しい日時が入力されるまで再入力してください。\n\n ");				/*  正しくない場合は　print として“日時の入力に誤りがあります\n正しい日時が入力されるまで再入力してください”と表示します。*/
+		}
+		else
+		{
+			check1 = false;
+		}
+	}
+
+	printf("\n");
+	printf("1：アメリカ(ニューヨーク) \n2：オーストラリア(シドニー) \n3：イギリス(ロンドン) \n4： 中国(北京) \n5： ミャンマー(ネイピードー) \n6： イタリア(ローマ) ");
+
+	printf("\n\n");
+	printf("都市を選択して下さい : ");
+	scanf_s("%d", &num);																							/* ユーザーに 都市 の番号をnum として入力するす */
+
+	Calculate(year, month, day, hour, minute, num);																	/* 関数呼び出し */
+	return 0;
+}
+
+void Calculate(int Year,int Month, int Day, int Hour, int Minutes,int Number)
+{
+	int YearCode = 0;
+	int MonthCode = 0;
+	int CenturyCode = 0;
+	int Century;
+	int RM[4] = {0,6,4,2};
+	int LeapYearCode = 0;
+	int YY;
+	int dayWeek;
+	int i;
+	int count = 0;
+	
+	if (Number == 1)
+	{
+		printf("アメリカ(ニューヨーク)の日時以下の通りです :\n\n");	                                     /*  "アメリカ(ニューヨーク)の時間は以下の通りです”　と表示させる。 */
+		
+		if (Minutes == 60)				                                                                 /*	分は　60　ですか？　どうか？　をチェックする　*/
+		{
+			Minutes = 0;				                                                                 /*	分は　60 場合は　分に　0を　入れる　*/
+			Hour = Hour + 1;			                                                                 /*	分は　60 場合は　時に　1時間を　追加する　*/
+		}
+		Hour = (Hour - 14);				                                                                 /*  アメリカ(ニューヨーク)の日時は日本(東京)の日時より　14時間　おそくのを　計算する　*/
+
+		if (Hour < 0)					                                                                 /*	時は　0より　ちさいですか？　どうか？　をチェックする　*/
+		{
+			Hour = Hour + 24;			                                                                 /*  負の値を取得しないより 24時間を　追加する　*/
+
+			if (Month == 2 || Month == 4 || Month == 6 ||
+				Month == 8 || Month == 9 || Month == 11 )	                                 /*　月は　2、4、6、8、9、11、1月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)														                     /*	日は　1日ですか？　どうか？　をチェックする　*/
+				{
+					Day = 31;														                     /*  日は　1日なら、日に　31を　入れる　*/
+					Month = Month - 1;											                     /*	月は　1月じゃない場合は　月に　1月を　引く　*/
+				}
+				else
+				{
+					Day = Day - 1;													                    /*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+
+			}
+			else if (Month == 5 || Month == 7 || Month == 10 || Month == 12)		                    /*　月は　5,7,10,12月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)														                    /*	日は　1日ですか？　どうか？　を　チェックする　*/
+				{
+					Day = 30;														                    /*  日は　1日なら、日に　30を　入れる　*/
+					Month = Month - 1;												                    /*  日は　1日なら、月に　1を　引く */
+				}
+				else
+				{
+					Day = Day - 1;													                    /*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+
+			}
+			else if (Month == 3)													                    /*	月は　3月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)														                    /*	日は　1日ですか？　どうか？　を　チェックする　*/
+				{
+					if ((Year % 400) == 0 || (Year % 4) == 0 && (Year % 100) != 0)
+					{
+						Day = 29;
+						Month = Month - 1;
+					}
+					else
+					{
+						Day = 28;														                    /*  日は　1日なら、日に　28を　入れる　*/
+						Month = Month - 1;												                    /*  日は　1日なら、月に　1を　引く */
+					}
+				}
+				else
+				{ 
+					Day = Day - 1;													                    /*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+			}			
+			else if (Month == 1)
+			{
+				if (Day == 1)
+				{
+					Day = 31;
+					Month = 12;
+					Year = Year - 1;
+				}
+			}
+		}
+		
+		printf(" %d", Year);
+		printf("年");
+		printf(" %d", Month);																			/*	アメリカ(ニューヨーク)の月を　表示する　 */
+		printf("月");																					/*  "月”　と表示させる。 */
+		printf(" %d", Day);																				/*	アメリカ(ニューヨーク)の日を　表示する　 */
+		printf("日");																					/*  "日”　と表示させる。 */
+		printf(" %d", Hour);																			/*	アメリカ(ニューヨーク)の時を　表示する　 */
+		printf("時");																					/*  "時”　と表示させる。 */
+		printf(" %d", Minutes);																			/*	アメリカ(ニューヨーク)の分を　表示する　 */
+		printf("分");																					/*  "分”　と表示させる。 */
+				
+		switch (Month)
+		{
+		case 1: MonthCode = 0;
+				break;
+		case 2: MonthCode = 3;
+				break;
+		case 3: MonthCode = 3;
+			break;
+		case 4: MonthCode = 6;
+			break;
+		case 5: MonthCode = 1;
+			break;
+		case 6: MonthCode = 4;
+			break;
+		case 7: MonthCode = 6;
+			break;
+		case 8: MonthCode = 2;
+			break;
+		case 9: MonthCode = 5;
+			break;			
+		case 10: MonthCode = 0;
+			break;
+		case 11: MonthCode = 3;
+			break;
+		case 12: MonthCode = 5;
+			break;
+		default:
+			break;
+		}
+
+
+		if ((Year % 400) == 0 || (Year % 4) == 0 && (Year % 100) != 0)
+		{
+			if ((Month == 1) || (Month == 2))
+			{
+				LeapYearCode = 1;
+			}
+			else
+			{
+				LeapYearCode = 0;
+			}
+			
+		}
+		else
+		{
+			LeapYearCode = 0;
+		}
+
+
+		Century = Year / 100;
+		for ( i = 15; i <= 99 ; i++)
+		{
+			if (Century == i)
+			{
+				CenturyCode = RM[count];
+			}
+			count++;
+			if (count == 4)
+			{
+				count = 0;
+			}
+		}
+
+		YY = Year % 100;
+		YearCode = (YY + (YY / 4)) % 7;	
+
+		dayWeek =(YearCode + MonthCode + Day + CenturyCode - LeapYearCode );
+		dayWeek = dayWeek % 7;
+
+		switch (dayWeek) 
+		{
+		case 0:  printf(" (Sunday)");
+				 break;
+		case 1:  printf(" (Monday)");
+				 break;
+		case 2:  printf(" (Tuesday)");
+				 break;
+		case 3:  printf(" (Wednesday)");
+				 break;
+		case 4:  printf(" (Thursday)");
+				 break;
+		case 5:  printf(" (Friday)");
+				 break;
+		case 6:  printf(" (Saturday)");
+				 break;
+		default: 
+				 break;
+		}		
+
+		printf("\n");
+		if (Year % 400 == 0)
+		{
+			printf("%d is a leap year.\n", Year);
+		}
+		else if (Year % 100 == 0)
+		{
+			printf("%d isn't a leap year.\n", Year);
+		}
+		else if (Year % 4 == 0)
+		{
+			printf("%d is a leap year.\n", Year);
+		}
+		else
+		{
+			printf("%d isn't a leap year.\n", Year);
+		}
+		printf("\n");																					/*	次の行に行きます　*/
+	
+	}
+	if (Number == 2)
+	{
+		printf("オーストラリア(シドニー)の時間は以下の通りです :\n\n");									/*  "オーストラリア(シドニー)の時間は以下の通りです”　と表示させる。 */
+
+		Minutes = Minutes + 0;																			/*	アメリカ(ニューヨーク)の日時は日本(東京)の日時より　2時間　早いので　0分　追加する */
+
+		if (Minutes == 60)																				/*	分は　60　ですか？　どうか？　をチェックする　*/
+		{
+			Minutes = 0;																				/*	分は　60 場合は　分に　0を　入れる　		　*/
+			Hour = Hour + 1;																			/*	分は　60 場合は　時に　1時間を　追加する	　*/
+		}
+
+		Hour = (Hour + 2);																				/*  オーストラリア(シドニー)の日時は日本(東京)の日時より　2時間　早くのを　計算する　*/
+
+		if (Hour > 24)																					/*	時は　24より　大きいですか？　どうか？　をチェックする　*/
+		{
+			Hour = Hour - 24;																			/*  負の値を取得しないより 24時間を　追加する　*/
+
+			if (Month == 9 || Month == 4 || Month == 6 || Month == 11)									/*　月は　9,4,6,11月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 30)																			/*	日は　30日ですか？　どうか？　を　チェックする　*/
+				{
+					Day = 1;																			/*  日は　1日なら、日に　1を　入れる　*/
+					Month = Month + 1;																	/*  月は　12日じゃないなら、月に　1月を　追加する*/
+				
+				}
+				else
+				{
+					Day = Day + 1;																		/*  日は　30日じゃないなら、月に　1月を　追加する*/
+				}
+
+			}
+			else if (Month == 1 || Month == 3 || Month == 5 ||
+				Month == 7 || Month == 8 || Month == 10 )												/*　月は1,3,5,7,8,10,12月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 31)																			/*	日は　31日ですか？　どうか？　を　チェックする　*/
+				{
+					Day = 1;																			/*  日は　31日なら、日に　1を　入れる　*/
+					Month = Month + 1;																	/*  日は　31日、月に　1月を　追加する*/
+							
+				}
+				else
+				{
+					Day = Day + 1;																		/*  日は　31日じゃないなら、日に　1日を　追加する*/
+				}
+
+			}
+			else if (Month == 2)																		/*　月は　2月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 28)																			/*	日は　28日ですか？　どうか？　を　チェックする　*/
+				{
+					Day = 1;																			/*  日は　28日なら、日に　1を　入れる　*/
+					Month = Month + 1;																	/*  日は　28日なら、月に　1月を　追加する*/
+				}
+				else
+				{
+					Day = Day + 1;																		/*  日は　28日じゃないならなら、日に　1日を　追加する*/
+				}
+			}
+			else if (Month == 12)
+			{
+				if (Day == 31)
+				{
+					Day = 1;
+					Month = 1;
+					Year = Year + 1;
+				}
+			}
+		}
+		printf(" %d", Month);																			/*	オーストラリア(シドニー)の月を　表示する　 */
+		printf("月");																					/*  "月”　と表示させる。 */
+		printf(" %d", Day);																				/*	オーストラリア(シドニー)の日を　表示する　 */
+		printf("日");																					/*  "日”　と表示させる。 */
+		printf(" %d", Hour);																			/*	オーストラリア(シドニー)の時を　表示する　 */
+		printf("時");																					/*  "時”　と表示させる。 */
+		printf(" %d", Minutes);																			/*	オーストラリア(シドニー)の分を　表示する　 */
+		printf("分");																					/*  "分”　と表示させる。 */
+		printf("\n");																					/*	次の行に行きます　*/
+	}
+	if (Number == 3)
+	{
+		printf("イギリス(ロンドン)の時間は以下の通りです :\n\n");										/*  "イギリス(ロンドン)の時間は以下の通りです”　と表示させる。 */
+
+		Minutes = Minutes - 0;																			/*	イギリス(ロンドン)の日時は日本(東京)の日時より　14時間　おそいので　0分　引く */
+		if (Minutes == 60)																				/*	分は　60　ですか？　どうか？　をチェックする　*/
+		{
+			Minutes = 0;																				/*	分は　60 場合は　分に　0を　入れる　*/
+			Hour = Hour + 1;																			/*	分は　60 場合は　時に　1時間を　追加する　*/
+		}
+		Hour = (Hour - 9);
+
+		if (Hour < 0)																					/*	時は　0より　ちさいですか？　どうか？　をチェックする　*/
+		{
+			Hour = Hour + 24;																			/*  負の値を取得しないより 24時間を　追加する　*/
+
+			if (Month == 2 || Month == 4 || Month == 6 ||
+				Month == 8 || Month == 9 || Month == 11 )									/*　月は　2、4、6、8、9、11、1月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)														                     /*	日は　1日ですか？　どうか？　をチェックする　*/
+				{
+					Day = 31;														                     /*  日は　1日なら、日に　31を　入れる　*/
+					Month = Month - 1;											                     /*	月は　1月じゃない場合は　月に　1月を　引く　*/
+				}
+				else
+				{
+					Day = Day - 1;													                    /*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}			
+			}
+			else if (Month == 5 || Month == 7 || Month == 10 || Month == 12)							/*　月は　5,7,10,12月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)																			/*	日は　1日ですか？　どうか？　を　チェックする　*/
+				{
+					Day = 30;																			/*  日は　1日なら、日に　30を　入れる　*/
+					Month = Month - 1;
+				}
+				else
+				{
+					Day = Day - 1;																		/*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+
+			}
+			else if (Month == 3)													                    /*	月は　3月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)														                    /*	日は　1日ですか？　どうか？　を　チェックする　*/
+				{
+					if ((Year % 400) == 0 || (Year % 4) == 0 && (Year % 100) != 0)
+					{
+						Day = 29;
+						Month = Month - 1;
+					}
+					else
+					{
+						Day = 28;														                    /*  日は　1日なら、日に　28を　入れる　*/
+						Month = Month - 1;												                    /*  日は　1日なら、月に　1を　引く */
+					}
+
+				}
+				else
+				{
+					Day = Day - 1;													                    /*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+			}
+			else if (Month == 1)
+			{
+				if (Day == 1)
+				{
+					Day = 31;
+					Month = 12;
+					Year = Year - 1;
+				}
+			}
+		}
+		printf(" %d", Month);																			/*	イギリス(ロンドン)の時間は以下の通りですの月を　表示する　 */
+		printf("月");																					/*  "月”　と表示させる。 */
+		printf(" %d", Day);																				/*	イギリス(ロンドン)の時間は以下の通りですの日を　表示する　 */
+		printf("日");																					/*  "日”　と表示させる。 */
+		printf(" %d", Hour);																			/*	イギリス(ロンドン)の時間は以下の通りですの時を　表示する　 */
+		printf("時");																					/*  "時”　と表示させる。 */
+		printf(" %d", Minutes);																			/*	イギリス(ロンドン)の時間は以下の通りですの分を　表示する　 */
+		printf("分");																					/*  "分”　と表示させる。 */
+		printf("\n");																					/*	次の行に行きます　*/
+	}
+	if (Number == 4)
+	{
+		printf("中国(北京)の時間は以下の通りです :\n\n");												/*  "中国(北京)の時間は以下の通りです”　と表示させる。 */
+		Minutes = Minutes - 0;
+		if (Minutes == 60)																				/*	分は　60　ですか？　どうか？　をチェックする　*/
+		{
+			Minutes = 0;																				/*	分は　60 場合は　分に　0を　入れる　*/
+			Hour = Hour + 1;
+		}
+		Hour = (Hour - 1);																				/*  中国(北京)の日時は日本(東京)の日時より　1時間　おそくのを　計算する　*/
+
+		if (Hour < 0)																					/*	時は　0より　ちさいですか？　どうか？　をチェックする　*/
+		{
+			Hour = Hour + 24;																			/*  負の値を取得しないより 24時間を　追加する　*/
+
+			if (Month == 2 || Month == 4 || Month == 6 || Month == 8 || 
+				Month == 9 || Month == 11 )												/*　月は　2、4、6、8、9、11、1月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)														                     /*	日は　1日ですか？　どうか？　をチェックする　*/
+				{
+					Day = 31;														                     /*  日は　1日なら、日に　31を　入れる　*/
+					Month = Month - 1;											                     /*	月は　1月じゃない場合は　月に　1月を　引く　*/
+				}
+				else
+				{
+					Day = Day - 1;													                    /*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+			}
+			else if (Month == 5 || Month == 7 || Month == 10 || Month == 12)	/*　月は　5,7,10,12月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)																			/*	日は　1日ですか？　どうか？　を　チェックする　*/
+				{
+					Day = 30;																			/*  日は　1日なら、日に　30を　入れる　*/
+					Month = Month - 1;																	/*  日は　1日なら、月に　1を　引く */
+				}
+				else
+				{
+					Day = Day - 1;																		/*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+
+			}
+			else if (Month == 3)													                    /*	月は　3月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)														                    /*	日は　1日ですか？　どうか？　を　チェックする　*/
+				{
+					if ((Year % 400) == 0 || (Year % 4) == 0 && (Year % 100) != 0)
+					{
+						Day = 29;
+						Month = Month - 1;
+					}
+					else
+					{
+						Day = 28;														                    /*  日は　1日なら、日に　28を　入れる　*/
+						Month = Month - 1;												                    /*  日は　1日なら、月に　1を　引く */
+					}
+
+				}
+				else
+				{
+					Day = Day - 1;													                    /*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+			}
+			else if (Month == 1)
+			{
+				if (Day == 1)
+				{
+					Day = 31;
+					Month = 12;
+					Year = Year - 1;
+				}
+			}
+		}
+		printf(" %d", Month);																			/*	中国(北京)の時間は以下の通りですの月を　表示する　 */
+		printf("月");																					/*  "月”　と表示させる。 */
+		printf(" %d", Day);																				/*	中国(北京)の時間は以下の通りですの日を　表示する　 */
+		printf("日");																					/*  "日”　と表示させる。 */
+		printf(" %d", Hour);																			/*	中国(北京)の時間は以下の通りですの時を　表示する　 */
+		printf("時");																					/*  "時”　と表示させる。 */
+		printf(" %d", Minutes);																			/*	中国(北京)の時間は以下の通りですの分を　表示する　 */
+		printf("分");																					/*  "分”　と表示させる。 */
+		printf("\n");																					/*	次の行に行きます　*/
+	}
+	if (Number == 5)
+	{
+		printf("ミャンマー(ネイピードー)の時間は以下の通りです :\n\n");									/*  "ミャンマー(ネイピードー)の時間は以下の通りです”　と表示させる。 */
+
+		Minutes = Minutes - 30;
+		if (Minutes < 0)																					/*	分は　0より　ちさいですか？　どうか？　をチェックする　*/
+		{
+			Minutes = Minutes + 60;
+			Hour = Hour - 1;
+		}
+
+		Hour = (Hour - 2);																				/*  ミャンマー(ネイピードー)の日時は日本(東京)の日時より　2時　30分　おそくのを　計算する　*/
+
+
+		if (Hour < 0)																					/*	時は　0より　ちさいですか？　どうか？　をチェックする　*/
+		{
+			Hour = Hour + 24;																			/*  負の値を取得しないより 24時間を　追加する　*/
+
+			if (Month == 2 || Month == 4 || Month == 6 ||
+				Month == 8 || Month == 9 || Month == 11 )									/*　月は　2、4、6、8、9、11、1月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)														                     /*	日は　1日ですか？　どうか？　をチェックする　*/
+				{
+					Day = 31;														                     /*  日は　1日なら、日に　31を　入れる　*/
+					Month = Month - 1;											                     /*	月は　1月じゃない場合は　月に　1月を　引く　*/
+				}
+				else
+				{
+					Day = Day - 1;													                    /*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+			}
+			else if (Month == 5 || Month == 7 || Month == 10 || Month == 12)							/*　月は　5,7,10,12月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)																			/*	日は　1日ですか？　どうか？　を　チェックする　*/
+				{
+					Day = 30;																			/*  日は　1日なら、日に　30を　入れる　*/
+					Month = Month - 1;																	/*  日は　1日なら、月に　1を　引く */
+				}
+				else
+				{
+					Day = Day - 1;																		/*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+
+			}
+			else if (Month == 3)													                    /*	月は　3月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)														                    /*	日は　1日ですか？　どうか？　を　チェックする　*/
+				{
+					if ((Year % 400) == 0 || (Year % 4) == 0 && (Year % 100) != 0)
+					{
+						Day = 29;
+						Month = Month - 1;
+					}
+					else
+					{
+						Day = 28;														                    /*  日は　1日なら、日に　28を　入れる　*/
+						Month = Month - 1;												                    /*  日は　1日なら、月に　1を　引く */
+					}
+
+				}
+				else
+				{
+					Day = Day - 1;													                    /*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+			}
+			else if (Month == 1)
+			{
+				if (Day == 1)
+				{
+					Day = 31;
+					Month = 12;
+					Year = Year - 1;
+				}
+			}
+		}
+		printf(" %d", Month);																			/*	ミャンマー(ネイピードー)の時間は以下の通りですの月を　表示する　 */
+		printf("月");																					/*  "月”　と表示させる。 */
+		printf(" %d", Day);																				/*	ミャンマー(ネイピードー)の時間は以下の通りですの日を　表示する　 */
+		printf("日");																					/*  "日”　と表示させる。 */
+		printf(" %d", Hour);																			/*	ミャンマー(ネイピードー)の時間は以下の通りですの時を　表示する　 */
+		printf("時");																					/*  "時”　と表示させる。 */
+		printf(" %d", Minutes);																			/*	ミャンマー(ネイピードー)の時間は以下の通りですの分を　表示する　 */
+		printf("分");																					/*  "分”　と表示させる。 */
+		printf("\n");																					/*	次の行に行きます　*/
+	}
+	if (Number == 6)
+	{
+		printf("イタリア(ローマ)の時間は以下の通りです :\n\n");											/*  "イタリア(ローマ)の時間は以下の通りです”　と表示させる。 */
+		Minutes = Minutes - 0;
+		if (Minutes == 60)																				/*	分は　60　ですか？　どうか？　をチェックする　*/
+		{
+			Minutes = 0;																				/*	分は　60 場合は　分に　0を　入れる　*/
+			Hour = Hour + 1;
+		}
+
+		Hour = (Hour - 8);																				/*  イタリア(ローマ)の日時は日本(東京)の日時より　8時間　おそくのを　計算する　*/
+
+		if (Hour < 0)																					/*	時は　0より　ちさいですか？　どうか？　をチェックする　*/
+		{
+			Hour = Hour + 24;																			/*  負の値を取得しないより 24時間を　追加する　*/
+
+			if (Month == 2 || Month == 4 || Month == 6 || 
+				Month == 8 || Month == 9 || Month == 11 )	/*　月は　2、4、6、8、9、11、1月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)														                     /*	日は　1日ですか？　どうか？　をチェックする　*/
+				{
+					Day = 31;														                     /*  日は　1日なら、日に　31を　入れる　*/
+					Month = Month - 1;											                     /*	月は　1月じゃない場合は　月に　1月を　引く　*/
+				}
+				else
+				{
+					Day = Day - 1;													                    /*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+			}
+			else if (Month == 5 || Month == 7 || Month == 10 || Month == 12)							/*　月は　5,7,10,12月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)																			/*	日は　1日ですか？　どうか？　を　チェックする　*/
+				{
+					Day = 30;																			/*  日は　1日なら、日に　30を　入れる　*/
+					Month = Month - 1;																	/*  日は　1日なら、月に　1を　引く */
+				}
+				else
+				{
+					Day = Day - 1;																		/*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+
+			}
+			else if (Month == 3)													                    /*	月は　3月ですか？　どうか？　を　チェックする　*/
+			{
+				if (Day == 1)														                    /*	日は　1日ですか？　どうか？　を　チェックする　*/
+				{
+					if ((Year % 400) == 0 || (Year % 4) == 0 && (Year % 100) != 0)
+					{
+						Day = 29;
+						Month = Month - 1;
+					}
+					else
+					{
+						Day = 28;														                    /*  日は　1日なら、日に　28を　入れる　*/
+						Month = Month - 1;												                    /*  日は　1日なら、月に　1を　引く */
+					}
+
+				}
+				else
+				{
+					Day = Day - 1;													                    /*	日は　1日じゃない場合は　日に　1月を　引く　*/
+				}
+			}
+			else if (Month == 1)
+			{
+				if (Day == 1)
+				{
+					Day = 31;
+					Month = 12;
+					Year = Year - 1;
+				}
+			}
+		}
+		printf(" %d", Month);																			/*	イタリア(ローマ)の時間は以下の通りですの月を　表示する　 */
+		printf("月");																					/*  "月”　と表示させる。 */
+		printf(" %d", Day);																				/*	イタリア(ローマ)の時間は以下の通りですの日を　表示する　 */
+		printf("日");																					/*  "日”　と表示させる。 */
+		printf(" %d", Hour);																			/*	イタリア(ローマ)の時間は以下の通りですの時を　表示する　 */
+		printf("時");																					/*  "時”　と表示させる。 */
+		printf(" %d", Minutes);																			/*	イタリア(ローマ)の時間は以下の通りですの分を　表示する　 */
+		printf("分");																					/*  "分”　と表示させる。 */
+		printf("\n");																					/*	次の行に行きます　*/
+	}
+}
+
+
